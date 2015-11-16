@@ -9,6 +9,8 @@ import sge._
 
 object Main extends Game with GameApp {
 
-  script live = {..}
+  script live = println: "Live start!"
+                sleep: 3000
+                println: "Live end!"
 
 }

@@ -70,7 +70,7 @@ abstract class Game {
 
     lifecycle = workflow || while(glfwWindowShouldClose(window) != GL_TRUE) sleep: 15
 
-    workflow = live && render
+    workflow = live || render
 
     render = glfwSwapBuffers: window
              glfwPollEvents()
