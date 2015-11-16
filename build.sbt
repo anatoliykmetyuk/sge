@@ -14,5 +14,3 @@ libraryDependencies ++= Seq(
 fork := true
 
 javaOptions in run += "-XstartOnFirstThread"
-
-excludeFilter := "Main.scala"

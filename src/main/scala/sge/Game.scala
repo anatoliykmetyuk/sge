@@ -68,12 +68,12 @@ abstract class Game {
 
     sleep(t: Long) = {* Thread sleep t *}
 
-    lifecycle = workflow || while(glfwWindowShouldClose(window) != GL_TRUE) sleep: 1000
+    lifecycle = workflow || while(glfwWindowShouldClose(window) != GL_TRUE) sleep: 15
 
     workflow = live && render
 
     render = glfwSwapBuffers: window
              glfwPollEvents()
-             sleep: 1000
+             sleep: 15
 
 }
