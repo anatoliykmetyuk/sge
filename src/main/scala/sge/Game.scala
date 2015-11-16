@@ -1,6 +1,7 @@
 package sge
 
 import subscript.language
+import subscript.Predef._
 
 import java.nio.ByteBuffer
 import java.nio.IntBuffer
@@ -65,8 +66,6 @@ abstract class Game {
 
   script..
     live: Any
-
-    sleep(t: Long) = {* Thread sleep t *}
 
     lifecycle = workflow || while(glfwWindowShouldClose(window) != GL_TRUE) sleep: 15
 

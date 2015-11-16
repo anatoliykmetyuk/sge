@@ -1,4 +1,5 @@
 import subscript.language
+import subscript.Predef._
 
 import subscript.swing._
 import subscript.vm.executor._
