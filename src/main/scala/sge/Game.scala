@@ -75,5 +75,6 @@ abstract class Game {
     render = glfwSwapBuffers: window
              glfwPollEvents()
              sleep: 15
+             ...
 
 }
