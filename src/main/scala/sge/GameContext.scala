@@ -15,6 +15,8 @@ trait GameContext {this: Game =>
     override script lifecycle = world.addBody: this
                                 super.lifecycle
                                 {!world.removeBody(this)!}
+
+    def render(): Unit
   }
 
 }

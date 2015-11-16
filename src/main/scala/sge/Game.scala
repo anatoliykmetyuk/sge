@@ -3,6 +3,8 @@ package sge
 import subscript.language
 import subscript.Predef._
 
+import scala.collection.JavaConversions._
+
 import java.nio.ByteBuffer
 import java.nio.IntBuffer
 import org.lwjgl.BufferUtils
@@ -16,17 +18,25 @@ import org.lwjgl.glfw.GLFW._
 import org.lwjgl.opengl.GL11._
 import org.lwjgl.system.MemoryUtil.NULL
 
-abstract class Game {
+import org.dyn4j.dynamics._
+
+abstract class Game extends GameContext {
   SharedLibraryLoader.load()
   
-
+  // Initial properties
   val width : Int = 640
   val height: Int = 480
   val title : String = "SubScript Game Engine Application"
 
 
+  // Physics
+  val world = new World
+
+
+  // LWJGL window handle
   var window: Long = _
 
+  // Callbacks
   val errorCb = Callbacks.errorCallbackPrint(System.err)
 
   val keyCb = new GLFWKeyCallback {
@@ -36,6 +46,7 @@ abstract class Game {
     }
   }
 
+  // Initializes OpenGL
   def init() {
     glfwSetErrorCallback(errorCb)
     if (glfwInit() != GL_TRUE) throw new IllegalStateException("Unable to initialize GLFW")
@@ -51,6 +62,7 @@ abstract class Game {
     GLContext.createFromCurrent()
   }
 
+  // Terminates OpenGL
   def term() {
     glfwDestroyWindow(window)
     keyCb.release()
@@ -58,6 +70,7 @@ abstract class Game {
     errorCb.release()
   }
 
+  /** Start the game */
   def start() {
     init()
     subscript.DSL._execute(lifecycle)
@@ -71,9 +84,10 @@ abstract class Game {
 
     workflow = live || render
 
-    render = glfwSwapBuffers: window
+    render = {!for (b <- world.getBodyIterator) b.asInstanceOf[GameObject].render()!}
+             glfwSwapBuffers: window
              glfwPollEvents()
-             sleep: 15
+             sleep: 15   // 60 FPS
              ...
 
 }
