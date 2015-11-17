@@ -26,9 +26,12 @@ abstract class Game extends LWJGLEngine
   /** Start the game */
   def start() {
     initGl()
-    subscript.DSL._execute(lifecycle)
+    body()
     termGl()
   }
+
+  /** Main part of the game */
+  def body(): Unit = subscript.DSL._execute(lifecycle)
 
   script..
     live: Any
