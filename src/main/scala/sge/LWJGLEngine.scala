@@ -33,9 +33,19 @@ trait LWJGLEngine {this: Game =>
     glfwSetErrorCallback(errorCb)
     if (glfwInit() != GL11.GL_TRUE) throw new IllegalStateException("Unable to initialize GLFW")
     
-    // Creating the window
+    // Window hints
     glfwDefaultWindowHints()
     glfwWindowHint(GLFW_VISIBLE, GL11.GL_FALSE)
+
+    // Use OpenGL 3
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3)
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3)
+
+    // Use Core profile on OS X instead of default Legacy profile - to be able to use OpenGL 2 and higher
+    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE)
+    glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL11.GL_TRUE)
+
+    // Creating the window
     window = glfwCreateWindow(width, height, title, NULL, NULL)
 
     if (window == NULL) {

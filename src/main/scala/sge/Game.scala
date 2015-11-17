@@ -11,7 +11,8 @@ import org.lwjgl.opengl.GL11
 import org.dyn4j.dynamics._
 
 abstract class Game extends LWJGLEngine
-                       with GameContext {
+                       with GameContext
+                       with ShaderEngine {
   
   // Initial properties
   val width : Int = 640
