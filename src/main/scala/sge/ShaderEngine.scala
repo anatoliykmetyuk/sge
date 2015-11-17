@@ -4,6 +4,45 @@ import org.lwjgl.opengl.{GL11, GL20}
 
 trait ShaderEngine {
 
+  val SGE_SHADER_DEFAULT = "sge_shader_default"
+
+
+  val defaultShaderPrograms = Map[String, ShaderProgram](
+    /**
+     * Accepts positions of the vertices in "position" and
+     * the color of whatever is rendered in "color".
+     * Renders the figure as is with specified color.
+     */
+    SGE_SHADER_DEFAULT -> ShaderProgram(Seq(
+      Shader(
+        tpe = GL20.GL_VERTEX_SHADER
+      , source =
+          """#version 330
+            |in vec2 position;
+            |void main() {
+            |  gl_Position = vec4(position, 0., 1.);
+            |}
+            |""".stripMargin
+      )
+    
+    , Shader(
+        tpe = GL20.GL_FRAGMENT_SHADER
+      , source =
+          """#version 330
+            |out vec4 out_color;
+            |uniform vec4 color;
+            |void main() {
+            |  out_color = color;  
+            |}
+            |""".stripMargin
+      )
+    ))
+  )
+
+
+  val shaderPrograms = collection.mutable.Map[String, ShaderProgram]() ++ defaultShaderPrograms
+
+
   def createShader(shader: Shader): Int = {
     // Compile the shader
     val handle: Int = GL20.glCreateShader(shader.tpe)
@@ -41,9 +80,15 @@ trait ShaderEngine {
     handle
   }
 
-  def program(shaders: Seq[Shader]): Int =
-    createShaderProgram {shaders.map(createShader)}
 
+  def compileShaderPrograms() {
+    for (p <- shaderPrograms.values) p.handle
+  }
+
+
+  case class Shader(tpe: Int, source: String)
+
+  case class ShaderProgram(shaders: Seq[Shader]) {
+    lazy val handle = createShaderProgram(shaders.map(createShader))
+  }
 }
-
-case class Shader(tpe: Int, source: String)

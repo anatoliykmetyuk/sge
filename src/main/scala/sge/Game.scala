@@ -27,6 +27,7 @@ abstract class Game extends LWJGLEngine
   /** Start the game */
   def start() {
     initGl()
+    compileShaderPrograms()
     body()
     termGl()
   }
