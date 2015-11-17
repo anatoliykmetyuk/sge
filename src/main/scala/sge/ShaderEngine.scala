@@ -21,7 +21,7 @@ trait ShaderEngine {
     handle
   }
 
-  def createShaderProgram(shaders: Array[Int]): Int = {
+  def createShaderProgram(shaders: Seq[Int]): Int = {
     // Link shaders into a program
     val handle: Int = GL20.glCreateProgram()
     for (s <- shaders) GL20.glAttachShader(handle, s)
@@ -40,6 +40,9 @@ trait ShaderEngine {
     // Reutrn program's address
     handle
   }
+
+  def program(shaders: Seq[Shader]): Int =
+    createShaderProgram {shaders.map(createShader)}
 
 }
 
