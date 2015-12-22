@@ -15,17 +15,16 @@ import sge._
 
 object Main extends Game with GameApp {
 
-  override def body() {
-    GL11.glClearColor(0.0f, 0.0f, 0.5f, 1.0f)
-    while(glfwWindowShouldClose(window) != GL11.GL_TRUE) {
-      GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT)
-      renderSquare()
-      glfwSwapBuffers(window)
-      glfwPollEvents()
-    }
-  }
+  // override def body() {
+  //   while(glfwWindowShouldClose(window) != GL11.GL_TRUE) {
+  //     GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT)
+  //     renderSquare()
+  //     glfwSwapBuffers(window)
+  //     glfwPollEvents()
+  //   }
+  // }
 
-  def renderSquare() {
+  def renderSquare(k: Float) {
     // Prepare data
     val data = Array[Float](
       -0.5f, -0.5f, 
@@ -34,7 +33,7 @@ object Main extends Game with GameApp {
        0.5f,  0.5f,
       -0.5f,  0.5f,
        0.5f, -0.5f
-    )
+    ).map(_ * k)
     val dataBuffer = BufferUtils.createFloatBuffer(data.size)
     dataBuffer.put(data)
     dataBuffer.flip()
@@ -65,8 +64,19 @@ object Main extends Game with GameApp {
     GL20.glDisableVertexAttribArray(0);
   }
 
-  script live = println: "Live start!"
-                sleep: 3000
-                println: "Live end!"
+  class Box(val step: Float, val delay: Long) extends GameObject {
+    var size: Float = 0
+    
+    override def render() {
+      renderSquare(size)
+    }
+
+    override script live =
+      while(size <= 1)
+      let size += step
+      sleep: delay
+  }
+
+  script live = new Box(0.1f, 300)
 
 }

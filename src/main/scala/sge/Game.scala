@@ -43,7 +43,8 @@ abstract class Game extends LWJGLEngine
 
     workflow = live || render
 
-    render = {!for (b <- world.getBodyIterator) b.asInstanceOf[GameObject].render()!}
+    render = GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT)
+             {!for (b <- world.getBodyIterator) b.asInstanceOf[GameObject].render()!}
              glfwSwapBuffers: window
              glfwPollEvents()
              sleep: 15   // 60 FPS
