@@ -66,7 +66,7 @@ trait ShaderEngine {
     GL20.glLinkProgram(handle)
 
     // Check for errors
-    val status = GL20.glGetShaderi(handle, GL20.GL_LINK_STATUS)
+    val status = GL20.glGetProgrami(handle, GL20.GL_LINK_STATUS)
     if (status == GL11.GL_FALSE) {
       val error = GL20.glGetProgramInfoLog(handle)
       System.err.println(s"Error while linking the program: $error")

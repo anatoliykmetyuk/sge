@@ -8,7 +8,7 @@ import scala.swing.Swing
 
 import org.lwjgl.BufferUtils
 
-import org.lwjgl.opengl.{GL11, GL15, GL20}
+import org.lwjgl.opengl.{GL11, GL15, GL20, GL30}
 import org.lwjgl.glfw.GLFW._
 
 import sge._
@@ -16,7 +16,6 @@ import sge._
 object Main extends Game with GameApp {
 
   override def body() {
-    println(shaderPrograms(SGE_SHADER_DEFAULT).handle)
     GL11.glClearColor(0.0f, 0.0f, 0.5f, 1.0f)
     GL11.glViewport(0, 0, width, height)
     while(glfwWindowShouldClose(window) != GL11.GL_TRUE) {
@@ -41,25 +40,26 @@ object Main extends Game with GameApp {
     dataBuffer.put(data)
     dataBuffer.flip()
 
-    // Load it to the GPU
+    // VAO - Vertex Array Object
+    val vao = GL30.glGenVertexArrays()
+    GL30.glBindVertexArray(vao)
+
+    // VBO - Vertex Buffer Object
     val dataHandle = GL15.glGenBuffers()
     GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, dataHandle)
-    GL15.glBufferData(GL15.GL_ARRAY_BUFFER, dataHandle, GL15.GL_STATIC_DRAW)
-    GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, 0)
+    GL15.glBufferData(GL15.GL_ARRAY_BUFFER, dataBuffer, GL15.GL_STATIC_DRAW)
 
     // Prepare the shader program
     val program = shaderPrograms(SGE_SHADER_DEFAULT).handle
     GL20.glUseProgram(program)
-    
-    GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, dataHandle)
-    GL20.glBindAttribLocation(program, 0, "position")
-    GL20.glEnableVertexAttribArray(0)
-    GL20.glVertexAttribPointer(0, 2, GL11.GL_FLOAT, false, 0, 0)
-  
+    val lPosition = GL20.glGetAttribLocation(program, "position")
+
+    // Connect the data to the shader
+    GL20.glEnableVertexAttribArray(lPosition)
+    GL20.glVertexAttribPointer(lPosition, 2, GL11.GL_FLOAT, false, 0, 0)
+
     // Draw
     GL11.glDrawArrays(GL11.GL_TRIANGLES, 0, 6);
-
-    println(GL20.glGetProgramInfoLog(program))
 
     // Clean up
     GL20.glUseProgram(0);
