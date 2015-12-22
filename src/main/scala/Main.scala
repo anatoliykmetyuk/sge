@@ -17,7 +17,6 @@ object Main extends Game with GameApp {
 
   override def body() {
     GL11.glClearColor(0.0f, 0.0f, 0.5f, 1.0f)
-    GL11.glViewport(0, 0, width, height)
     while(glfwWindowShouldClose(window) != GL11.GL_TRUE) {
       GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT)
       renderSquare()
