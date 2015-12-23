@@ -55,5 +55,8 @@ object Main extends Game with GameApp
               new Bullet(-5, 0, new Vector2(20, 0))
               new Bullet(-8, 2, new Vector2(30, 0))
 
+              // Timer
+              sleep: 5000
+
 
 }
