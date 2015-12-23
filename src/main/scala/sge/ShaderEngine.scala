@@ -29,9 +29,10 @@ trait ShaderEngine {
         tpe = GL20.GL_FRAGMENT_SHADER
       , source =
           """#version 330
+            |uniform vec4 color;
             |out vec4 out_color;
             |void main() {
-            |  out_color = vec4(0., 1., 1., 1.);  
+            |  out_color = color;//vec4(0., 1., 1., 1.);  
             |}
             |""".stripMargin
       )

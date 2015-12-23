@@ -7,7 +7,7 @@ import org.lwjgl.glfw.GLFW._
 
 object GlUtils {
 
-  def renderRectangle(vertices: Array[Float], shaderProgram: Int) {
+  def renderRectangle(vertices: Array[Float], shaderProgram: Int, color: Array[Float]) {
     val dataBuffer = BufferUtils.createFloatBuffer(vertices.size)
     dataBuffer.put(vertices)
     dataBuffer.flip()
@@ -23,11 +23,13 @@ object GlUtils {
 
     // Prepare the shader program
     GL20.glUseProgram(shaderProgram)
-    val lPosition = GL20.glGetAttribLocation(shaderProgram, "position")
+    val lPosition = GL20.glGetAttribLocation (shaderProgram, "position")
+    val lColor    = GL20.glGetUniformLocation(shaderProgram, "color"   )
 
     // Connect the data to the shader
     GL20.glEnableVertexAttribArray(lPosition)
     GL20.glVertexAttribPointer(lPosition, 2, GL11.GL_FLOAT, false, 0, 0)
+    GL20.glUniform4f(lColor, color(0), color(1), color(2), color(3))
 
     // Draw
     GL11.glDrawArrays(GL11.GL_TRIANGLES, 0, 6);

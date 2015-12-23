@@ -12,7 +12,7 @@ import org.dyn4j.geometry._
 
 trait BoxComponent {this: Game =>
 
-  abstract class Box(x: Double, y: Double, width: Double, height: Double) extends GameObject {
+  abstract class Box(x: Double, y: Double, width: Double, height: Double, color: Array[Float]) extends GameObject {
     initBody()
     
     def initBody() {
@@ -28,10 +28,10 @@ trait BoxComponent {this: Game =>
     }
 
     def renderFixture(fixture: BodyFixture) {
-      val poly    = polygon(fixture)
-      val program = shaderPrograms(SGE_SHADER_DEFAULT).handle
+      val poly     = polygon(fixture)
+      val program  = shaderPrograms(SGE_SHADER_DEFAULT).handle
 
-      GlUtils.renderRectangle(poly, program)
+      GlUtils.renderRectangle(poly, program, color)
     }
 
     def polygon(fixture: BodyFixture): Array[Float] = {
