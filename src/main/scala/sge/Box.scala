@@ -37,7 +37,6 @@ trait BoxComponent {this: Game =>
     def polygon(fixture: BodyFixture): Array[Float] = {
       var vertices = fixture.getShape.asInstanceOf[Polygon].getVertices.map(_.copy())
       vertices.foreach(getTransform.transform)  // Moving the vertices in the physical space
-      vertices :+= vertices.head.copy
 
       // Scaling so that there's 10 units across the screen
       for (v <- vertices) {
@@ -45,6 +44,7 @@ trait BoxComponent {this: Game =>
         v.y /= 10
       }
 
+      vertices ++= Seq(vertices.head.copy, vertices(2).copy)
       vertices.flatMap(v => Seq(v.x, v.y)).map(_.toFloat)
     }
   }

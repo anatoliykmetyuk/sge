@@ -30,7 +30,7 @@ object GlUtils {
     GL20.glVertexAttribPointer(lPosition, 2, GL11.GL_FLOAT, false, 0, 0)
 
     // Draw
-    GL11.glDrawArrays(GL11.GL_TRIANGLE_STRIP, 0, 6);
+    GL11.glDrawArrays(GL11.GL_TRIANGLES, 0, 6);
 
     // Clean up
     GL20.glUseProgram(0);
