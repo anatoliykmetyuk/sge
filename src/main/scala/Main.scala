@@ -29,23 +29,31 @@ object Main extends Game with GameApp
     )
   }
 
-  class SimpleBox(x: Double, y: Double, width: Double, height: Double, static: Boolean = false) extends Box(x, y, width, height, randomColor) {
-    if (static) setMass(MassType.INFINITE)
+  class SimpleBox(x: Double, y: Double, width: Double, height: Double) extends Box(x, y, width, height, randomColor) {
     override script live = {..}
+  }
+
+  class Wall(x: Double, y: Double, width: Double, height: Double) extends Box(x, y, width, height, randomColor) {
+    setMass(MassType.INFINITE)
+    override script live = {..}
+  }
+
+  class Bullet(x: Double, y: Double, direction: Vector2) extends Box(x, y, 2, 0.5, randomColor) {
+    override script live = {:applyImpulse(direction):} {..}
   }
 
 
   script..
-    live =
-      var table = new SimpleBox(0, -7, 18 , 0.5, true)
-      var wall  = new SimpleBox(7,  0, 0.5, 18 , true)
+    live = || // Walls
+              new Wall(0, -7, 18 , 0.5)
+              new Wall(7, 0, 0.5, 18  )
 
-      var b1    = new SimpleBox(0 , 0, 1, 1  )
-      var b2    = new SimpleBox(-5, 2, 2, 0.5)
+              // Target
+              new SimpleBox(3, 0, 1, 5)
 
-      let b1.applyImpulse(new Vector2(10, 0))
-      let b2.applyImpulse(new Vector2(30, 0))
+              // Bullets
+              new Bullet(-5, 0, new Vector2(20, 0))
+              new Bullet(-8, 2, new Vector2(30, 0))
 
-      [|| table wall b1 b2 new SimpleBox(5, 0, 1, 5)]
 
 }
