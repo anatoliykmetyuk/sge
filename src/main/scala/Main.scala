@@ -46,6 +46,6 @@ object Main extends Game with GameApp
       let b1.applyImpulse(new Vector2(10, 0))
       let b2.applyImpulse(new Vector2(30, 0))
 
-      table || wall || b1 || b2 || new SimpleBox(5, 0, 1, 5)
+      [|| table wall b1 b2 new SimpleBox(5, 0, 1, 5)]
 
 }
