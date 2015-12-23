@@ -13,16 +13,9 @@ import org.lwjgl.glfw.GLFW._
 
 import sge._
 
-object Main extends Game with GameApp {
+object Main extends Game with GameApp
+                         with BoxComponent {
 
-  // override def body() {
-  //   while(glfwWindowShouldClose(window) != GL11.GL_TRUE) {
-  //     GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT)
-  //     renderSquare()
-  //     glfwSwapBuffers(window)
-  //     glfwPollEvents()
-  //   }
-  // }
 
   def renderSquare(k: Float) {
     // Prepare data
@@ -34,49 +27,29 @@ object Main extends Game with GameApp {
       -0.5f,  0.5f,
        0.5f, -0.5f
     ).map(_ * k)
-    val dataBuffer = BufferUtils.createFloatBuffer(data.size)
-    dataBuffer.put(data)
-    dataBuffer.flip()
-
-    // VAO - Vertex Array Object
-    val vao = GL30.glGenVertexArrays()
-    GL30.glBindVertexArray(vao)
-
-    // VBO - Vertex Buffer Object
-    val dataHandle = GL15.glGenBuffers()
-    GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, dataHandle)
-    GL15.glBufferData(GL15.GL_ARRAY_BUFFER, dataBuffer, GL15.GL_STATIC_DRAW)
-
-    // Prepare the shader program
     val program = shaderPrograms(SGE_SHADER_DEFAULT).handle
-    GL20.glUseProgram(program)
-    val lPosition = GL20.glGetAttribLocation(program, "position")
 
-    // Connect the data to the shader
-    GL20.glEnableVertexAttribArray(lPosition)
-    GL20.glVertexAttribPointer(lPosition, 2, GL11.GL_FLOAT, false, 0, 0)
-
-    // Draw
-    GL11.glDrawArrays(GL11.GL_TRIANGLES, 0, 6);
-
-    // Clean up
-    GL20.glUseProgram(0);
-    GL20.glDisableVertexAttribArray(0);
+    GlUtils.renderRectangle(data, program)
   }
 
-  class Box(val step: Float, val delay: Long) extends GameObject {
-    var size: Float = 0
+  // class Box(val step: Float, val delay: Long) extends GameObject {
+  //   var size: Float = 0
     
-    override def render() {
-      renderSquare(size)
-    }
+  //   override def render() {
+  //     renderSquare(size)
+  //   }
 
-    override script live =
-      while(size <= 1)
-      let size += step
-      sleep: delay
+  //   override script live =
+  //     while(size <= 1)
+  //     let size += step
+  //     sleep: delay
+  // }
+
+  class SimpleBox(x: Double, y: Double, width: Double, height: Double) extends Box(x, y, width, height) {
+    override script live = {..}
   }
 
-  script live = new Box(0.1f, 300)
+
+  script live = new SimpleBox(0, 0, 1, 1)
 
 }
