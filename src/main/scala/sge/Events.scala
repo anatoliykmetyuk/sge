@@ -11,33 +11,34 @@ import org.dyn4j.dynamics._
 
 
 trait Events extends KeyboardEvents
-                with CollisionEvents
+                with CollisionEvents {this: Game =>}
 
-class TriggerMap[K] {
-  private var _triggers: Map[K, Trigger] = Map()
+class Triggers[A] {
+  private var triggers: Map[A => Boolean, Trigger] = Map()
 
-  def triggers = _triggers
-
-  def event(key: K): Trigger = {
-    lazy val entry: (K, Trigger) = key -> new Trigger {
-      override script lifecycle = @{there.onDeactivate {_triggers -= entry._1}}: super.lifecycle
+  def event(filter: A => Boolean): Trigger = {
+    lazy val entry: (A => Boolean, Trigger) = filter -> new Trigger {
+      override script lifecycle = @{there.onDeactivate {triggers -= entry._1}}: super.lifecycle
     }
 
-    _triggers += entry
+    triggers += entry
     entry._2
   }
 
-  def happened(key: K): Unit = triggers.get(key).foreach(_.trigger)
+  def event(key: A): Trigger = event(_ == key)
+
+  def happened(key: A): Unit = triggers.find {case (f, t) => f(key)}.foreach(_._2.trigger)
 }
 
-class BinaryTriggerMap[K1, K2] extends TriggerMap[(K1, K2)] {
-  def event   (k1: K1, k2: K2): Trigger = event   ((k1, k2))
-  def happened(k1: K1, k2: K2): Unit    = happened((k1, k2))
+class BinaryTriggers[K1, K2] extends Triggers[(K1, K2)] {
+  def event   (filter: (K1, K2) => Boolean): Trigger = event   {k => filter(k._1, k._2)}
+  def event   (k1: K1, k2: K2             ): Trigger = event   ((k1, k2))
+  def happened(k1: K1, k2: K2             ): Unit    = happened((k1, k2))
 }
 
 
-trait KeyboardEvents {
-  val keys = new BinaryTriggerMap[Int, Int]
+trait KeyboardEvents {this: Game =>
+  val keys = new BinaryTriggers[Int, Int]
 
   def keyCharEvent(key: Char, evt: Int) = keys.event(key.toString.toUpperCase.head.toInt, evt)  // Casting char to upper case
 
@@ -53,12 +54,12 @@ trait KeyboardEvents {
   }
 }
 
-trait CollisionEvents {
-  val collisions = new BinaryTriggerMap[Body, Body]
+trait CollisionEvents {this: Game =>
+  val collisions = new BinaryTriggers[GameObject, GameObject]
 
   val collisionListener = new CollisionAdapter {
     override def collision(body1: Body, fixture1: BodyFixture, body2: Body, fixture2: BodyFixture): Boolean = {
-      collisions.happened(body1, body2)
+      collisions.happened(body1.asInstanceOf[GameObject], body2.asInstanceOf[GameObject])
       true
     }
   }

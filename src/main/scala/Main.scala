@@ -1,5 +1,6 @@
 import subscript.language
 import subscript.Predef._
+import subscript.objectalgebra._
 
 import subscript.swing._
 import subscript.vm.executor._
@@ -39,6 +40,7 @@ object Main extends Game with GameApp
   }
 
   class Bullet(x: Double, y: Double, direction: Vector2) extends Box(x, y, 2, 0.5, randomColor) {
+    tag = "bullet"
     override script live = {:applyImpulse(direction):} {..}
   }
 
@@ -48,7 +50,10 @@ object Main extends Game with GameApp
     val backward = forward.getNegative
     val upward   = forward.copy.rotate(math.Pi / 2).multiply(5)
     
-    override script live = controls ...
+    val gameOver = new Trigger
+
+    override script live = [|| [controls   ...]
+                               [collisions ...]] / gameOverProcedure
 
     script..
       controls = [  moveOnKey: 'a', backward
@@ -57,6 +62,16 @@ object Main extends Game with GameApp
 
       moveOnKey(key: Char, dir: Vector2) =
         press: key [{!applyForce(dir)!} sleep: 15 ...] / release: key
+
+      collisions = collision: "bullet" gameOver.trigger
+
+      gameOverProcedure = gameOver
+
+                          let setMass(MassType.INFINITE)
+                          setLinearVelocity : 0, 0
+                          setAngularVelocity: 0
+
+                          sleep: 1000
   }
 
 
