@@ -42,6 +42,13 @@ object Main extends Game with GameApp
     override script live = {:applyImpulse(direction):} {..}
   }
 
+  class Plane(x: Double, y: Double, direction: Vector2) extends Box(x, y, 3, 0.5, randomColor) {
+    setGravityScale(0)
+    
+    override script live =
+      press: 'A' {:applyImpulse(direction):} ...
+  }
+
 
   script..
     live = || // Walls
@@ -55,8 +62,11 @@ object Main extends Game with GameApp
               new Bullet(-5, 0, new Vector2(20, 0))
               new Bullet(-8, 2, new Vector2(30, 0))
 
+              // Plane
+              new Plane(-9, 5, new Vector2(10, 0))
+
               // Timer
-              sleep: 5000
+              // sleep: 5000
 
 
 }
