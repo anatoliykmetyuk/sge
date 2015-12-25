@@ -22,9 +22,6 @@ trait LWJGLEngine {this: Game =>
 
   val keyCb = new GLFWKeyCallback {
     override def invoke(window: Long, key: Int, scancode: Int, action: Int, mods: Int) {
-      if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
-        glfwSetWindowShouldClose(window, GL11.GL_TRUE)
-
       keyTriggers.get((key, action)).foreach(_.trigger)
     }
   }

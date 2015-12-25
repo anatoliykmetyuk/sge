@@ -43,10 +43,20 @@ object Main extends Game with GameApp
   }
 
   class Plane(x: Double, y: Double, direction: Vector2) extends Box(x, y, 3, 0.5, randomColor) {
-    setGravityScale(0)
+
+    val forward  = direction
+    val backward = forward.getNegative
+    val upward   = forward.copy.rotate(math.Pi / 2).multiply(5)
     
-    override script live =
-      press: 'A' {:applyImpulse(direction):} ...
+    override script live = controls ...
+
+    script..
+      controls = [  moveOnKey: 'a', backward
+                  + moveOnKey: 'd', forward]
+                 || moveOnKey: 'w', upward
+
+      moveOnKey(key: Char, dir: Vector2) =
+        press: key [{!applyForce(dir)!} sleep: 15 ...] / release: key
   }
 
 
@@ -63,10 +73,6 @@ object Main extends Game with GameApp
               new Bullet(-8, 2, new Vector2(30, 0))
 
               // Plane
-              new Plane(-9, 5, new Vector2(10, 0))
-
-              // Timer
-              // sleep: 5000
-
+              new Plane(-9, 5, new Vector2(25, 0))
 
 }

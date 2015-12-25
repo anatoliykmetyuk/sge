@@ -40,7 +40,7 @@ abstract class Game extends LWJGLEngine
   script..
     live: Any
 
-    lifecycle = workflow || while(glfwWindowShouldClose(window) != GL11.GL_TRUE) sleep: 15
+    lifecycle = workflow / press: GLFW_KEY_ESCAPE glfwSetWindowShouldClose: window, GL11.GL_TRUE
 
     workflow = live || render || physics
 
