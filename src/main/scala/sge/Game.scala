@@ -23,6 +23,7 @@ abstract class Game extends LWJGLEngine
 
   // Physics
   val world = new World
+  world.addListener(collisionListener)
 
   def p(tag: Any) = println(s"$tag:\t${GL11.glGetError}")
 

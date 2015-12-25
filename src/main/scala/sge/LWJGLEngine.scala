@@ -20,12 +20,6 @@ trait LWJGLEngine {this: Game =>
   // Callbacks
   val errorCb = Callbacks.errorCallbackPrint(System.err)
 
-  val keyCb = new GLFWKeyCallback {
-    override def invoke(window: Long, key: Int, scancode: Int, action: Int, mods: Int) {
-      keyTriggers.get((key, action)).foreach(_.trigger)
-    }
-  }
-
   // Initializes OpenGL
   def initGl() {
     // Setting the error callback, initializing OpenGL
@@ -53,7 +47,7 @@ trait LWJGLEngine {this: Game =>
     }
 
     // Setting the keyboard callback
-    glfwSetKeyCallback(window, keyCb)
+    glfwSetKeyCallback(window, keyCallback)
 
     // Centering the window
     val vidmode: ByteBuffer = glfwGetVideoMode(glfwGetPrimaryMonitor())
@@ -82,7 +76,7 @@ trait LWJGLEngine {this: Game =>
   def termGl() {
     // Destroying the window, releasing its keyboard callback
     glfwDestroyWindow(window)
-    keyCb.release()
+    keyCallback.release()
 
     // Destroying GLFW, releasing its error callback
     glfwTerminate()
